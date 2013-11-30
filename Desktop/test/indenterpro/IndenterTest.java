@@ -23,7 +23,7 @@ public class IndenterTest {
     public void testRemoveBlankCharacters() {
         final String in = "String name   = \"temp\";";
         final String outExpected = "String name = \"temp\";";
-        String out = indenter.indent(in);
+        String out = indenter.removeBlankCharacters(in);
         assertEquals(outExpected, out);
     }
 
@@ -37,5 +37,13 @@ public class IndenterTest {
     public void testFirstsBlankCharacters() {
         final String in = "        String name   = \"temp\";";
         assertEquals("        ", indenter.firstsBlankCharacters(in));
+    }
+    
+    @Test
+    public void testLineBiggerInit() {
+        final String in = "String testing =  \"testing\";\n" +
+                          "String hello = \"hello\";";
+        
+        final String outExpected = "String testing = \"testing\";";
     }
 }

@@ -18,6 +18,10 @@ public class Indenter {
     public String indent(String string) {
         return string.replaceAll("[\\p{Blank}]++", " ");
     }
+    
+    public String removeBlankCharacters(String string) {
+        return string.replaceAll("[\\p{Blank}]++", " ");
+    }
 
     public String firstsBlankCharacters(String string) {
         Matcher matcher = Pattern.compile("([\\p{Blank}]++).*+").matcher(string);
