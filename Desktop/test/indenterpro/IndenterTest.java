@@ -21,7 +21,7 @@ public class IndenterTest {
 
     @Test
     public void testRemoveBlankCharacters() {
-        final String in = "String name   = \"temp\";";
+        final String in = "String    name   = \"temp\";";
         final String outExpected = "String name = \"temp\";";
         String out = indenter.removeBlankCharacters(in);
         assertEquals(outExpected, out);
@@ -38,12 +38,25 @@ public class IndenterTest {
         final String in = "        String name   = \"temp\";";
         assertEquals("        ", indenter.firstsBlankCharacters(in));
     }
-    
+
+    @Test
+    public void testFillString() {
+        final String outExpected = "   "; // 3
+        assertEquals(outExpected, indenter.fillString(' ', 3));
+    }
+
     @Test
     public void testLineBiggerInit() {
-        final String in = "String testing =  \"testing\";\n" +
-                          "String hello = \"hello\";";
+        final String in = "String testing =  \"testing\";\n"
+                + "String hello = \"hello\";";
+        final String outExpected = "String testing = \"testing\";\n"
+                + "String hello   = \"hello\";";
+        final String out = indenter.indentBlock(in, '=');
+        assertEquals(outExpected, out);
+    }
+    
+    @Test
+    public void testIndent(){
         
-        final String outExpected = "String testing = \"testing\";";
     }
 }
