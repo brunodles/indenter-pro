@@ -19,46 +19,50 @@ public class Indenter {
         String result = string;
         for (char c : chars) {
             result = indentBlock(result, c);
+            System.out.println("Result {" + result + "}");
         }
         return result;
     }
 
     public String indentBlock(String block, char aChar) {
         List<String> lines = splitStringAsList(block);
-//        String firstsBlankCharacters = firstsBlankCharacters(lines);
+        String firstsBlankCharacters = firstsBlankCharacters(lines);
+        System.out.println("firstsBlankCharacters {" + firstsBlankCharacters + "}");
         fixLines(lines);
         int maxCharacterPosition = findMaxCharacterPosition(lines, aChar);
-        StringBuilder builder = new StringBuilder();
+        String result = "";
         for (int i = 0; i < lines.size(); i++) {
             String string = lines.get(i);
             if (string.isEmpty()) {
+                result += "\n";
                 continue;
             }
 
+            String line = "";
             int characterPosition = string.indexOf(aChar);
             if ((characterPosition > 0) && (characterPosition < maxCharacterPosition)) {
-//                builder.append(firstsBlankCharacters);
-                builder.append(string.substring(0, characterPosition));
-                builder.append(fillString(' ', maxCharacterPosition - characterPosition));
-                builder.append(string.substring(characterPosition));
+                line += (string.substring(0, characterPosition));
+                line += (fillString(' ', maxCharacterPosition - characterPosition));
+                line += (string.substring(characterPosition));
 //                if (lines.size() < i) {
-//                    builder.append('\n');
+//                line += ('\n');
 //                    builder.appendCodePoint('\n');
 //                }
             } else {
-                builder.append(string);
+                line += (string);
             }
+            result += firstsBlankCharacters + line + "\n";
 
         }
-        return builder.toString();
+        return result;
     }
 
     public void fixLines(List<String> lines) {
         final int linesSize = lines.size();
         for (int i = 0; i < linesSize; i++) {
 //             remove os caracteres brancos e adiciona '\n' no final da linha, caso não seja a ultima
-            lines.set(i, removeBlankCharacters(lines.get(i)) + (i + 1 < linesSize ? '\n' : ""));
-            lines.set(i, removeBlankCharacters(lines.get(i)));
+//            lines.set(i, removeBlankCharacters(lines.get(i)) + (i + 1 < linesSize ? '\n' : ""));
+            lines.set(i, removeBlankCharacters(lines.get(i).trim()));
         }
     }
 
@@ -82,17 +86,22 @@ public class Indenter {
         int maxPosition = 0;
         for (String string : lines) {
             int position = string.indexOf(aChar);
-            maxPosition |= position;
+            if (position > maxPosition) {
+                maxPosition = position;
+            }
         }
         return maxPosition;
     }
 
     public int countMaxFirstsBlankCharacters(List<String> lines) {
-        int count = 0;
+        int maxCount = 0;
         for (String string : lines) {
-            count |= countFirstsBlankCharacters(string);
+            int count = countFirstsBlankCharacters(string);
+            if (count > maxCount) {
+                maxCount = count;
+            }
         }
-        return count;
+        return maxCount;
     }
 
     /**
@@ -125,6 +134,7 @@ public class Indenter {
         for (int i = 0; i < lines.size(); i++) {
             int count = countFirstsBlankCharacters(lines.get(i));
             if (count > maxCount) {
+                maxCount = count;
                 lineIndex = i;
             }
         }
