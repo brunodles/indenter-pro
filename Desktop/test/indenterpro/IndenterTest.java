@@ -52,8 +52,7 @@ public class IndenterTest {
                           + "String hello = \"hello\";";
         final String outExpected = "String testing = \"testing\";\n"
                                    + "String hello   = \"hello\";\n";
-        Option option = Option.createOption("<=>");
-        final String out = indenter.indentBlock(in, option);
+        String out = indenter.indent(in);
         assertEquals(outExpected, out);
     }
 

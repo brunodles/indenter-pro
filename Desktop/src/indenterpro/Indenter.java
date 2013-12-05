@@ -23,19 +23,26 @@ public class Indenter {
     }
 
     public String indent(String string) {
-        String result = string;
+        List<String> lines = splitStringAsList(string);
+        String firstsBlankCharacters = firstsBlankCharacters(lines);
+        System.out.println("firstsBlankCharacters {" + firstsBlankCharacters + "}");
+        fixLines(lines);
+
         for (Option option : options) {
-            result = indentBlock(result, option);
-            System.out.println("Result {" + result + "}");
+            indentBlock(lines, option);
+        }
+        return joinLines(lines, firstsBlankCharacters);
+    }
+
+    public String joinLines(List<String> lines, String blankCharacters) {
+        String result = "";
+        for (String string : lines) {
+            result += blankCharacters + string + "\n";
         }
         return result;
     }
 
-    public String indentBlock(String block, Option option) {
-        List<String> lines = splitStringAsList(block);
-        String firstsBlankCharacters = firstsBlankCharacters(lines);
-        System.out.println("firstsBlankCharacters {" + firstsBlankCharacters + "}");
-        fixLines(lines);
+    public void indentBlock(List<String> lines, Option option) {
         int maxCharacterPosition = findMaxCharacterPosition(lines, option);
         String result = "";
         for (int i = 0; i < lines.size(); i++) {
@@ -51,17 +58,12 @@ public class Indenter {
                 line += (string.substring(0, characterPosition));
                 line += (fillString(' ', maxCharacterPosition - characterPosition));
                 line += (string.substring(characterPosition));
-//                if (lines.size() < i) {
-//                line += ('\n');
-//                    builder.appendCodePoint('\n');
-//                }
             } else {
                 line += (string);
             }
-            result += firstsBlankCharacters + line + "\n";
+            lines.set(i, line);
 
         }
-        return result;
     }
 
     public void fixLines(List<String> lines) {
