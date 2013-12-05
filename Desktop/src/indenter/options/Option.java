@@ -74,7 +74,19 @@ public class Option {
         return regex;
     }
 
-    public Pattern compilePattern() {
+    public Pattern pattern() {
         return Pattern.compile(regex);
+    }
+
+    public Matcher matcher(String string) {
+        return pattern().matcher(string);
+    }
+
+    public int startIndex(String string) {
+        Matcher matcher = matcher(string);
+        if (matcher.find()) {
+            return matcher.start();
+        }
+        return -1;
     }
 }

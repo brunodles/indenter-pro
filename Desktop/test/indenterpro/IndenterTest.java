@@ -4,6 +4,7 @@
  */
 package indenterpro;
 
+import indenter.options.Option;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -16,7 +17,7 @@ public class IndenterTest {
     Indenter indenter;
 
     public IndenterTest() {
-        indenter = new Indenter();
+        indenter = new Indenter("<=>");
     }
 
     @Test
@@ -48,15 +49,15 @@ public class IndenterTest {
     @Test
     public void testLineBiggerInit() {
         final String in = "String testing =  \"testing\";\n"
-                + "String hello = \"hello\";";
+                          + "String hello = \"hello\";";
         final String outExpected = "String testing = \"testing\";\n"
-                + "String hello   = \"hello\";";
-        final String out = indenter.indentBlock(in, '=');
+                                   + "String hello   = \"hello\";\n";
+        Option option = Option.createOption("<=>");
+        final String out = indenter.indentBlock(in, option);
         assertEquals(outExpected, out);
     }
-    
+
     @Test
-    public void testIndent(){
-        
+    public void testIndent() {
     }
 }

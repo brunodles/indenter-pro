@@ -4,6 +4,7 @@
  */
 package indenterpro;
 
+import indenter.options.Option;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -15,21 +16,27 @@ import java.util.regex.Pattern;
  */
 public class Indenter {
 
-    public String indent(String string, char[] chars) {
+    List<Option> options;
+
+    public Indenter(String optionsStr) {
+        options = Option.createOptions(optionsStr);
+    }
+
+    public String indent(String string) {
         String result = string;
-        for (char c : chars) {
-            result = indentBlock(result, c);
+        for (Option option : options) {
+            result = indentBlock(result, option);
             System.out.println("Result {" + result + "}");
         }
         return result;
     }
 
-    public String indentBlock(String block, char aChar) {
+    public String indentBlock(String block, Option option) {
         List<String> lines = splitStringAsList(block);
         String firstsBlankCharacters = firstsBlankCharacters(lines);
         System.out.println("firstsBlankCharacters {" + firstsBlankCharacters + "}");
         fixLines(lines);
-        int maxCharacterPosition = findMaxCharacterPosition(lines, aChar);
+        int maxCharacterPosition = findMaxCharacterPosition(lines, option);
         String result = "";
         for (int i = 0; i < lines.size(); i++) {
             String string = lines.get(i);
@@ -39,7 +46,7 @@ public class Indenter {
             }
 
             String line = "";
-            int characterPosition = string.indexOf(aChar);
+            int characterPosition = option.startIndex(string);
             if ((characterPosition > 0) && (characterPosition < maxCharacterPosition)) {
                 line += (string.substring(0, characterPosition));
                 line += (fillString(' ', maxCharacterPosition - characterPosition));
@@ -82,10 +89,10 @@ public class Indenter {
         return builder.toString();
     }
 
-    public int findMaxCharacterPosition(List<String> lines, char aChar) {
+    public int findMaxCharacterPosition(List<String> lines, Option option) {
         int maxPosition = 0;
         for (String string : lines) {
-            int position = string.indexOf(aChar);
+            int position = option.startIndex(string);
             if (position > maxPosition) {
                 maxPosition = position;
             }
