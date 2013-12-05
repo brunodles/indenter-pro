@@ -5,6 +5,15 @@
  */
 package indenterpro;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author bruno
@@ -28,16 +37,28 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        characters = new javax.swing.JTextField();
+        options = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         text = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jLabel1.setText("Characters");
 
         text.setColumns(20);
+        text.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
         text.setRows(5);
         jScrollPane1.setViewportView(text);
 
@@ -59,7 +80,7 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(characters)
+                        .addComponent(options)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
                 .addContainerGap())
@@ -70,7 +91,7 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(characters, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(options, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
@@ -84,10 +105,68 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
         indent();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+    }//GEN-LAST:event_formWindowClosed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        load();
+    }//GEN-LAST:event_formWindowOpened
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        save();
+    }//GEN-LAST:event_formWindowClosing
+
+    public void writeFile(String fileName, String data) throws FileNotFoundException, IOException {
+        File file = new File("data-" + fileName);
+        file.createNewFile();
+        FileOutputStream fos = new FileOutputStream(file);
+        try {
+            fos.write(data.getBytes());
+        } finally {
+            fos.close();
+        }
+    }
+
+    public String readFile(String fileName) throws FileNotFoundException, IOException {
+        File optionsFile = new File("data-" + fileName);
+        FileInputStream fis = new FileInputStream(optionsFile);
+        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int bufferSize;
+        while ((bufferSize = fis.read(buffer)) != -1) {
+            byteArray.write(buffer, 0, bufferSize);
+        }
+        return new String(byteArray.toByteArray());
+    }
+
+    public void load() {
+        System.out.println("Load");
+        try {
+            options.setText(readFile("options"));
+        } catch (Exception ex) {
+        }
+        try {
+            text.setText(readFile("text"));
+        } catch (Exception ex) {
+        }
+    }
+
+    public void save() {
+        System.out.println("Save");
+        try {
+            writeFile("options", options.getText());
+        } catch (Exception ex) {
+        }
+        try {
+            writeFile("text", text.getText());
+        } catch (Exception ex) {
+        }
+    }
+
     private void indent() {
         // teste
         Indenter indenter = new Indenter();
-        String indented = indenter.indent(text.getText(), characters.getText().toCharArray());
+        String indented = indenter.indent(text.getText(), options.getText().toCharArray());
         text.setText(indented);
     }
 
@@ -125,12 +204,11 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField characters;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField options;
     private javax.swing.JTextArea text;
     // End of variables declaration//GEN-END:variables
 }
