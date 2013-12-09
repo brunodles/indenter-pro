@@ -4,7 +4,7 @@
  */
 
 
-import indenter.options.Option;
+import indenter.model.Option;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

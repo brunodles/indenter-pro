@@ -4,7 +4,8 @@
  */
 package indenterpro;
 
-import indenter.options.Option;
+import indenter.model.Indenter;
+import indenter.model.Option;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

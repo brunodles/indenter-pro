@@ -5,6 +5,7 @@
  */
 package indenterpro;
 
+import indenter.model.Indenter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;

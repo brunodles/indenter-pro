@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package indenterpro;
+package indenter.model;
 
-import indenter.options.Option;
+import indenter.model.Option;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,7 +19,7 @@ public class Indenter {
     List<Option> options;
 
     public Indenter(String optionsStr) {
-        options = Option.createOptions(optionsStr);
+        options = Option.createOptionList(optionsStr);
     }
 
     public String indent(String string) {
@@ -44,14 +44,8 @@ public class Indenter {
 
     public void indentBlock(List<String> lines, Option option) {
         int maxCharacterPosition = findMaxCharacterPosition(lines, option);
-        String result = "";
         for (int i = 0; i < lines.size(); i++) {
             String string = lines.get(i);
-            if (string.isEmpty()) {
-                result += "\n";
-                continue;
-            }
-
             String line = "";
             int characterPosition = option.startIndex(string);
             if ((characterPosition > 0) && (characterPosition < maxCharacterPosition)) {

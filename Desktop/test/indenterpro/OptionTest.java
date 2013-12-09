@@ -4,7 +4,7 @@
  */
 package indenterpro;
 
-import indenter.options.Option;
+import indenter.model.Option;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -34,7 +34,7 @@ public class OptionTest {
 
     @Test
     public void testOptions() {
-        List<Option> options = Option.createOptions("<(\\d)><3#(\\d)><(\\d)><3#(\\d)>");
+        List<Option> options = Option.createOptionList("<(\\d)><3#(\\d)><(\\d)><3#(\\d)>");
         assertEquals(options.size(), 4);
     }
 }
