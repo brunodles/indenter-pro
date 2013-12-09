@@ -15,10 +15,13 @@ import java.util.regex.Pattern;
  */
 public class Option {
 
+    // ( ?) space group.
     public static final String OPTION_REGEX = "<(?:(\\d+)\\#)?(.+?)>";
     int ignorableLines = 0;
     String regex;
     Pattern pattern;
+    int spaceGroupIndex;
+    int identableGroupIndex;
 
     public Pattern getPattern() {
         return pattern;
@@ -39,17 +42,40 @@ public class Option {
         return pattern.matcher(string);
     }
 
-    public int startIndex(String string) {
+    public int spaceIndex(String string) {
         Matcher matcher = matcher(string);
         if (matcher.find()) {
-            if (matcher.groupCount() > 0) {
-                return matcher.start(1);
-            }
-            return matcher.start();
+            return matcher.start(spaceGroupIndex);
         }
         return -1;
     }
 
+    public int startIdentableGroupIndex(String string) {
+        int result = startIndex(string, identableGroupIndex);
+        if (result < 0) {
+            result = startIndex(string, spaceGroupIndex);
+        }
+        return result;
+    }
+
+    public int startSpaceGroupIndex(String string) {
+        return startIndex(string, spaceGroupIndex);
+    }
+
+    private int startIndex(String string, int group) {
+        Matcher matcher = matcher(string);
+        if (matcher.find()) {
+            try {
+                return matcher.start(group);
+            } catch (Exception e) {
+            }
+        }
+        return -1;
+    }
+
+//    public String applyOption(String line){
+//        
+//    }
     @Override
     public String toString() {
         return "Option{" + "ignorableLines=" + ignorableLines + ", regex=" + regex + '}';
@@ -71,7 +97,50 @@ public class Option {
         option.ignorableLines = strToIntDef(matcher.group(1), 0);
         option.regex = regex;
         option.pattern = Pattern.compile(regex);
+        int spaceGroupIndex = findSpaceGroupIndex(regex);
+        int identableGroupIndex = findIdentableGroupIndex(regex);
+        if (identableGroupIndex < 0) {
+            identableGroupIndex = spaceGroupIndex;
+        }
+
+        if ((identableGroupIndex >= 0) && (spaceGroupIndex >= 0)) {
+            if (spaceGroupIndex == identableGroupIndex) {
+                spaceGroupIndex = 1;
+                identableGroupIndex = 1;
+            } else if (spaceGroupIndex > identableGroupIndex) {
+                spaceGroupIndex = 2;
+                identableGroupIndex = 1;
+            } else {
+                spaceGroupIndex = 1;
+                identableGroupIndex = 2;
+            }
+        } else {
+            if (spaceGroupIndex < 0) {
+                spaceGroupIndex = 0;
+            }
+            if (identableGroupIndex < 0) {
+                identableGroupIndex = 0;
+            }
+        }
+        option.spaceGroupIndex = spaceGroupIndex;
+        option.identableGroupIndex = identableGroupIndex;
         return option;
+    }
+
+    private static int findSpaceGroupIndex(String regex) {
+        return regex.indexOf("( ?)");
+    }
+
+    private static int findIdentableGroupIndex(String regex) {
+        Pattern pattern = Pattern.compile("\\((.+?)\\)");
+        Matcher matcher = pattern.matcher(regex);
+        while (matcher.find()) {
+            final String group = matcher.group(1);
+            if ((!" ?".equals(group)) && (!group.startsWith("?:"))) {
+                return matcher.start(1);
+            }
+        }
+        return -1;
     }
 
     public static Option createOption(String optionStr) {

@@ -4,7 +4,6 @@
  */
 package indenter.model;
 
-import indenter.model.Option;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,7 +24,7 @@ public class Indenter {
     public String indent(String string) {
         List<String> lines = splitStringAsList(string);
         String firstsBlankCharacters = firstsBlankCharacters(lines);
-        System.out.println("firstsBlankCharacters {" + firstsBlankCharacters + "}");
+//        System.out.println("firstsBlankCharacters {" + firstsBlankCharacters + "}");
         fixLines(lines);
 
         for (Option option : options) {
@@ -34,6 +33,13 @@ public class Indenter {
         return joinLines(lines, firstsBlankCharacters);
     }
 
+//    private String linesToString(List<String> lines) {
+//        StringBuilder builder = new StringBuilder();
+//        for (String string : lines) {
+//            builder.append(string);
+//        }
+//        return builder.toString();
+//    }
     public String joinLines(List<String> lines, String blankCharacters) {
         String result = "";
         for (String string : lines) {
@@ -47,11 +53,12 @@ public class Indenter {
         for (int i = 0; i < lines.size(); i++) {
             String string = lines.get(i);
             String line = "";
-            int characterPosition = option.startIndex(string);
+            int characterPosition = option.startIdentableGroupIndex(string);
+            int spacePosition = option.startSpaceGroupIndex(string);
             if ((characterPosition > 0) && (characterPosition < maxCharacterPosition)) {
-                line += (string.substring(0, characterPosition));
+                line += (string.substring(0, spacePosition));
                 line += (fillString(' ', maxCharacterPosition - characterPosition));
-                line += (string.substring(characterPosition));
+                line += (string.substring(spacePosition));
             } else {
                 line += (string);
             }
@@ -77,18 +84,10 @@ public class Indenter {
         return builder.toString();
     }
 
-    private String linesToString(List<String> lines) {
-        StringBuilder builder = new StringBuilder();
-        for (String string : lines) {
-            builder.append(string);
-        }
-        return builder.toString();
-    }
-
     public int findMaxCharacterPosition(List<String> lines, Option option) {
         int maxPosition = 0;
         for (String string : lines) {
-            int position = option.startIndex(string);
+            int position = option.startIdentableGroupIndex(string);
             if (position > maxPosition) {
                 maxPosition = position;
             }
