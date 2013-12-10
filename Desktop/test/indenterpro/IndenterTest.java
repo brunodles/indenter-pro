@@ -5,7 +5,6 @@
 package indenterpro;
 
 import indenter.model.Indenter;
-import indenter.model.Option;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -21,25 +20,26 @@ public class IndenterTest {
         indenter = new Indenter("<=>");
     }
 
-    @Test
-    public void testRemoveBlankCharacters() {
-        final String in = "String    name   = \"temp\";";
-        final String outExpected = "String name = \"temp\";";
-        String out = indenter.removeBlankCharacters(in);
-        assertEquals(outExpected, out);
-    }
+//    @Test
+//    public void testRemoveBlankCharacters() {
+//        final String in = "String    name   = \"temp\";";
+//        final String outExpected = "String name = \"temp\";";
+//        String out = indenter.removeBlankCharacters(in);
+//        assertEquals(outExpected, out);
+//    }
+//
+//    @Test
+//    public void testCountFirstsBlankCharacters() {
+//        final String in = "    String name   = \"temp\";"; //4
+//        assertEquals(4, indenter.countFirstsBlankCharacters(in));
+//    }
 
-    @Test
-    public void testCountFirstsBlankCharacters() {
-        final String in = "    String name   = \"temp\";"; //4
-        assertEquals(4, indenter.countFirstsBlankCharacters(in));
-    }
-
-    @Test
-    public void testFirstsBlankCharacters() {
-        final String in = "        String name   = \"temp\";";
-        assertEquals("        ", indenter.firstsBlankCharacters(in));
-    }
+    // test movido para line
+//    @Test
+//    public void testFirstsBlankCharacters() {
+//        final String in = "        String name   = \"temp\";";
+//        assertEquals("        ", indenter.firstsBlankCharacters(in));
+//    }
 
     @Test
     public void testFillString() {

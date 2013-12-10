@@ -60,7 +60,6 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
         jLabel1.setText("Characters");
 
         text.setColumns(20);
-        text.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
         text.setRows(5);
         jScrollPane1.setViewportView(text);
 

@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 public class RegexTest {
 
     public static void main(String[] args) {
-        String string = "frameCliente.Width := _width.Width;";
-        Pattern compile = Pattern.compile("( ?)(?:[\\w\\.]+?)(?: *?)(:=).++");
+        String string = "frmVendaFrenteLoja.sbtnF11.Enabled := false;";
+        Pattern compile = Pattern.compile("( ?)(?:[\\w\\.]+?)(?: ?)(\\:=)(?: *)\\w*");
         Matcher matcher = compile.matcher(string);
         while (matcher.find()) {
             System.out.println("-");

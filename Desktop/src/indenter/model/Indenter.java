@@ -4,10 +4,7 @@
  */
 package indenter.model;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -22,10 +19,10 @@ public class Indenter {
     }
 
     public String indent(String string) {
-        List<String> lines = splitStringAsList(string);
+        List<Line> lines = Line.splitStringAsLineList(string);
         String firstsBlankCharacters = firstsBlankCharacters(lines);
 //        System.out.println("firstsBlankCharacters {" + firstsBlankCharacters + "}");
-        fixLines(lines);
+//        fixLines(lines);
 
         for (Option option : options) {
             indentBlock(lines, option);
@@ -40,42 +37,40 @@ public class Indenter {
 //        }
 //        return builder.toString();
 //    }
-    public String joinLines(List<String> lines, String blankCharacters) {
+    public String joinLines(List<Line> lines, String blankCharacters) {
         String result = "";
-        for (String string : lines) {
-            result += blankCharacters + string + "\n";
+        for (Line line : lines) {
+            line.prefix = blankCharacters;
+            result += line.toString();
         }
         return result;
     }
 
-    public void indentBlock(List<String> lines, Option option) {
+    public void indentBlock(List<Line> lines, Option option) {
         int maxCharacterPosition = findMaxCharacterPosition(lines, option);
-        for (int i = 0; i < lines.size(); i++) {
-            String string = lines.get(i);
-            String line = "";
+        for (Line line : lines) {
+            String string = line.value;
+            String newValue = "";
             int characterPosition = option.startIdentableGroupIndex(string);
             int spacePosition = option.startSpaceGroupIndex(string);
             if ((characterPosition > 0) && (characterPosition < maxCharacterPosition)) {
-                line += (string.substring(0, spacePosition));
-                line += (fillString(' ', maxCharacterPosition - characterPosition));
-                line += (string.substring(spacePosition));
-            } else {
-                line += (string);
+                newValue += (string.substring(0, spacePosition));
+                newValue += (fillString(' ', maxCharacterPosition - characterPosition));
+                newValue += (string.substring(spacePosition));
+                line.value = newValue;
             }
-            lines.set(i, line);
 
         }
     }
 
-    public void fixLines(List<String> lines) {
-        final int linesSize = lines.size();
-        for (int i = 0; i < linesSize; i++) {
-//             remove os caracteres brancos e adiciona '\n' no final da linha, caso não seja a ultima
-//            lines.set(i, removeBlankCharacters(lines.get(i)) + (i + 1 < linesSize ? '\n' : ""));
-            lines.set(i, removeBlankCharacters(lines.get(i).trim()));
-        }
-    }
-
+//    public void fixLines(List<Line> lines) {
+//        final int linesSize = lines.size();
+//        for (int i = 0; i < linesSize; i++) {
+////             remove os caracteres brancos e adiciona '\n' no final da linha, caso não seja a ultima
+////            lines.set(i, removeBlankCharacters(lines.get(i)) + (i + 1 < linesSize ? '\n' : ""));
+//            lines.set(i, removeBlankCharacters(lines.get(i).trim()));
+//        }
+//    }
     public String fillString(char aChar, int size) {
         StringBuilder builder = new StringBuilder();
         while (builder.length() < size) {
@@ -84,10 +79,10 @@ public class Indenter {
         return builder.toString();
     }
 
-    public int findMaxCharacterPosition(List<String> lines, Option option) {
+    public int findMaxCharacterPosition(List<Line> lines, Option option) {
         int maxPosition = 0;
-        for (String string : lines) {
-            int position = option.startIdentableGroupIndex(string);
+        for (Line line : lines) {
+            int position = option.startIdentableGroupIndex(line.value);
             if (position > maxPosition) {
                 maxPosition = position;
             }
@@ -95,74 +90,21 @@ public class Indenter {
         return maxPosition;
     }
 
-    public int countMaxFirstsBlankCharacters(List<String> lines) {
-        int maxCount = 0;
-        for (String string : lines) {
-            int count = countFirstsBlankCharacters(string);
-            if (count > maxCount) {
-                maxCount = count;
-            }
-        }
-        return maxCount;
+    public int countMaxFirstsBlankCharacters(List<Line> lines) {
+        return firstsBlankCharacters(lines).length();
     }
 
-    /**
-     * Replace extra black characters
-     *
-     * @param string
-     * @return
-     */
-    public String removeBlankCharacters(String string) {
-        return string.replaceAll("[\\p{Blank}]++", " ");
-    }
-
-    /**
-     * Remove firts blank characters
-     *
-     * @param string
-     * @return
-     */
-    public String firstsBlankCharacters(String string) {
-        Matcher matcher = Pattern.compile("([\\p{Blank}]++).*+").matcher(string);
-        if (matcher.matches()) {
-            return matcher.group(1);
-        }
-        return "";
-    }
-
-    public String firstsBlankCharacters(List<String> lines) {
+    public String firstsBlankCharacters(List<Line> lines) {
         int lineIndex = 0;
         int maxCount = 0;
         for (int i = 0; i < lines.size(); i++) {
-            int count = countFirstsBlankCharacters(lines.get(i));
+            int count = lines.get(i).prefix.length();
             if (count > maxCount) {
                 maxCount = count;
                 lineIndex = i;
             }
         }
-        return firstsBlankCharacters(lines.get(lineIndex));
-    }
-
-    /**
-     * Count firts blank characters<br/>
-     * " String aString;"<br/>
-     * This string will return 1;<br/>
-     *
-     * @param string
-     * @return
-     */
-    public int countFirstsBlankCharacters(String string) {
-        return firstsBlankCharacters(string).length();
-    }
-
-    /**
-     * Splits one String in a list of String.
-     *
-     * @param string
-     * @return
-     */
-    public List<String> splitStringAsList(String string) {
-        return Arrays.asList(string.split("[\r\n]"));
+        return lines.get(lineIndex).prefix;
     }
 
     private String getLineSeparetor() {

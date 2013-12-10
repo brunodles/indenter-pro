@@ -99,29 +99,8 @@ public class Option {
         option.pattern = Pattern.compile(regex);
         int spaceGroupIndex = findSpaceGroupIndex(regex);
         int identableGroupIndex = findIdentableGroupIndex(regex);
-        if (identableGroupIndex < 0) {
-            identableGroupIndex = spaceGroupIndex;
-        }
-
-        if ((identableGroupIndex >= 0) && (spaceGroupIndex >= 0)) {
-            if (spaceGroupIndex == identableGroupIndex) {
-                spaceGroupIndex = 1;
-                identableGroupIndex = 1;
-            } else if (spaceGroupIndex > identableGroupIndex) {
-                spaceGroupIndex = 2;
-                identableGroupIndex = 1;
-            } else {
-                spaceGroupIndex = 1;
-                identableGroupIndex = 2;
-            }
-        } else {
-            if (spaceGroupIndex < 0) {
-                spaceGroupIndex = 0;
-            }
-            if (identableGroupIndex < 0) {
-                identableGroupIndex = 0;
-            }
-        }
+        spaceGroupIndex = ((spaceGroupIndex < 0) ? 0 : 1);
+        identableGroupIndex = ((identableGroupIndex < 0) ? spaceGroupIndex : 2);
         option.spaceGroupIndex = spaceGroupIndex;
         option.identableGroupIndex = identableGroupIndex;
         return option;
