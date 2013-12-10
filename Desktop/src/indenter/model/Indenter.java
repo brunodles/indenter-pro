@@ -4,6 +4,7 @@
  */
 package indenter.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,29 +22,48 @@ public class Indenter {
     public String indent(String string) {
         List<Line> lines = Line.splitStringAsLineList(string);
         String firstsBlankCharacters = firstsBlankCharacters(lines);
-//        System.out.println("firstsBlankCharacters {" + firstsBlankCharacters + "}");
-//        fixLines(lines);
-
+        List<Block> blocks = new ArrayList<Block>();
         for (Option option : options) {
-            indentBlock(lines, option);
+            List<Block> optionBlocks = findBlocks(lines, option);
+            if (optionBlocks != null && !optionBlocks.isEmpty()) {
+                blocks.addAll(optionBlocks);
+            }
+        }
+        for (Block block : blocks) {
+            indentBlock(block.lines, block.option);
         }
         return Line.joinLines(lines, firstsBlankCharacters);
+    }
+
+    private List<Block> findBlocks(List<Line> lines, Option option) {
+        List<Block> result = new ArrayList<Block>();
+        Block block = null;
+        int errosCount = 0;
+        for (Line line : lines) {
+            if (option.matcher(line.value).find()) {
+                if (block == null) {
+                    block = new Block(option);
+                    errosCount = 0;
+                    result.add(block);
+                }
+                block.addLine(line);
+            } else if ((++errosCount > option.ignorableLines) && (block != null)) {
+                result.add(block);
+                block = null;
+            }
+        }
+        return result;
     }
 
     public void indentBlock(List<Line> lines, Option option) {
         int maxCharacterPosition = findMaxCharacterPosition(lines, option);
         for (Line line : lines) {
-            String string = line.value;
+            String string = line.value.toString();
             int characterPosition = option.startIdentableGroupIndex(string);
             int spacePosition = option.startSpaceGroupIndex(string);
             if ((characterPosition > 0) && (characterPosition < maxCharacterPosition)) {
-                StringBuilder builder = new StringBuilder();
-                builder.append(string.substring(0, spacePosition));
-                builder.append(fillString(' ', maxCharacterPosition - characterPosition));
-                builder.append(string.substring(spacePosition));
-                line.value = builder.toString();
+                line.value.insert(spacePosition, fillString(' ', maxCharacterPosition - characterPosition));
             }
-
         }
     }
 
@@ -58,7 +78,7 @@ public class Indenter {
     public int findMaxCharacterPosition(List<Line> lines, Option option) {
         int maxPosition = 0;
         for (Line line : lines) {
-            int position = option.startIdentableGroupIndex(line.value);
+            int position = option.startIdentableGroupIndex(line.value.toString());
             if (position > maxPosition) {
                 maxPosition = position;
             }

@@ -38,8 +38,8 @@ public class Option {
         return regex;
     }
 
-    public Matcher matcher(String string) {
-        return pattern.matcher(string);
+    public Matcher matcher(CharSequence charSequence) {
+        return pattern.matcher(charSequence);
     }
 
     public int spaceIndex(String string) {

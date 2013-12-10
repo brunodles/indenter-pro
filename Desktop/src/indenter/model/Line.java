@@ -16,14 +16,13 @@ import java.util.regex.Pattern;
 public class Line {
 
     String prefix;
-    String value;
+    StringBuilder value;
     String sufix;
 
     Line(String lineStr) {
         this.prefix = "";
         this.sufix = "";
-        this.value = lineStr;
-        findFirstsBlankCharacters();
+        findFirstsBlankCharacters(lineStr);
     }
 
     /**
@@ -32,14 +31,14 @@ public class Line {
      * @param string
      * @return
      */
-    private void findFirstsBlankCharacters() {
+    private void findFirstsBlankCharacters(String value) {
         Matcher matcher = Pattern.compile("([\\p{Blank}]++).*+").matcher(value);
         if (matcher.matches()) {
             prefix = value.substring(0, matcher.end(1));
             value = value.substring(matcher.end(1));
-//            return matcher.group(1);
         }
         value = removeBlankCharacters(value);
+        this.value = new StringBuilder(value);
     }
 
     /**
@@ -83,7 +82,6 @@ public class Line {
 
     public static String joinLines(List<Line> lines, String blankCharacters) {
         StringBuilder builder = new StringBuilder();
-//        String result = "";
         for (Line line : lines) {
             line.prefix = blankCharacters;
             builder.append(line.toString());
