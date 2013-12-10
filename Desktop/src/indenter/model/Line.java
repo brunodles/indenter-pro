@@ -36,9 +36,29 @@ public class Line {
         Matcher matcher = Pattern.compile("([\\p{Blank}]++).*+").matcher(value);
         if (matcher.matches()) {
             prefix = value.substring(0, matcher.end(1));
-            value = removeBlankCharacters(value.substring(matcher.end(1)));
+            value = value.substring(matcher.end(1));
 //            return matcher.group(1);
         }
+        value = removeBlankCharacters(value);
+    }
+
+    /**
+     * Replace extra black characters
+     *
+     * @param string
+     * @return
+     */
+    private String removeBlankCharacters(String string) {
+        return string.trim().replaceAll("[\\p{Blank}]++", " ");
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(prefix);
+        builder.append(value);
+        builder.append(sufix);
+        return builder.toString();
     }
 
     /**
@@ -61,18 +81,13 @@ public class Line {
         return list;
     }
 
-    /**
-     * Replace extra black characters
-     *
-     * @param string
-     * @return
-     */
-    private String removeBlankCharacters(String string) {
-        return string.trim().replaceAll("[\\p{Blank}]++", " ");
-    }
-
-    @Override
-    public String toString() {
-        return prefix + value + sufix;
+    public static String joinLines(List<Line> lines, String blankCharacters) {
+        StringBuilder builder = new StringBuilder();
+//        String result = "";
+        for (Line line : lines) {
+            line.prefix = blankCharacters;
+            builder.append(line.toString());
+        }
+        return builder.toString();
     }
 }

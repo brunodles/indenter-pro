@@ -92,17 +92,22 @@ public class Option {
 
     private static Option findOption(Matcher matcher) {
         Option option = new Option();
-        //            System.out.println(" count =" + matcher.groupCount());
+
         final String regex = matcher.group(2);
         option.ignorableLines = strToIntDef(matcher.group(1), 0);
         option.regex = regex;
         option.pattern = Pattern.compile(regex);
         int spaceGroupIndex = findSpaceGroupIndex(regex);
         int identableGroupIndex = findIdentableGroupIndex(regex);
+
         spaceGroupIndex = ((spaceGroupIndex < 0) ? 0 : 1);
-        identableGroupIndex = ((identableGroupIndex < 0) ? spaceGroupIndex : 2);
+        identableGroupIndex = ((identableGroupIndex < 0) ? spaceGroupIndex : (spaceGroupIndex + 1));
+        if (spaceGroupIndex == 0 && identableGroupIndex > 0) {
+            spaceGroupIndex = identableGroupIndex;
+        }
         option.spaceGroupIndex = spaceGroupIndex;
         option.identableGroupIndex = identableGroupIndex;
+
         return option;
     }
 

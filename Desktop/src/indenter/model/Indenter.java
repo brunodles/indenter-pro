@@ -27,30 +27,21 @@ public class Indenter {
         for (Option option : options) {
             indentBlock(lines, option);
         }
-        return joinLines(lines, firstsBlankCharacters);
-    }
-
-    public String joinLines(List<Line> lines, String blankCharacters) {
-        String result = "";
-        for (Line line : lines) {
-            line.prefix = blankCharacters;
-            result += line.toString();
-        }
-        return result;
+        return Line.joinLines(lines, firstsBlankCharacters);
     }
 
     public void indentBlock(List<Line> lines, Option option) {
         int maxCharacterPosition = findMaxCharacterPosition(lines, option);
         for (Line line : lines) {
             String string = line.value;
-            String newValue = "";
             int characterPosition = option.startIdentableGroupIndex(string);
             int spacePosition = option.startSpaceGroupIndex(string);
             if ((characterPosition > 0) && (characterPosition < maxCharacterPosition)) {
-                newValue += (string.substring(0, spacePosition));
-                newValue += (fillString(' ', maxCharacterPosition - characterPosition));
-                newValue += (string.substring(spacePosition));
-                line.value = newValue;
+                StringBuilder builder = new StringBuilder();
+                builder.append(string.substring(0, spacePosition));
+                builder.append(fillString(' ', maxCharacterPosition - characterPosition));
+                builder.append(string.substring(spacePosition));
+                line.value = builder.toString();
             }
 
         }
