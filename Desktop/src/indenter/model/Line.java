@@ -15,11 +15,13 @@ import java.util.regex.Pattern;
  */
 public class Line {
 
-    String prefix = "";
-    String value = "";
-    String sufix = "";
+    String prefix;
+    String value;
+    String sufix;
 
     Line(String lineStr) {
+        this.prefix = "";
+        this.sufix = "";
         this.value = lineStr;
         findFirstsBlankCharacters();
     }
@@ -47,10 +49,14 @@ public class Line {
      */
     public static List<Line> splitStringAsLineList(String string) {
         ArrayList<Line> list = new ArrayList<Line>();
+        Line line = null;
         for (String s : string.split("[\r\n]")) {
-            final Line line = new Line(s);
+            line = new Line(s);
             line.sufix = "\n";
             list.add(line);
+        }
+        if (line != null) {
+            line.sufix = "";
         }
         return list;
     }

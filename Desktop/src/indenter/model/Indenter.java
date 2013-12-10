@@ -30,13 +30,6 @@ public class Indenter {
         return joinLines(lines, firstsBlankCharacters);
     }
 
-//    private String linesToString(List<String> lines) {
-//        StringBuilder builder = new StringBuilder();
-//        for (String string : lines) {
-//            builder.append(string);
-//        }
-//        return builder.toString();
-//    }
     public String joinLines(List<Line> lines, String blankCharacters) {
         String result = "";
         for (Line line : lines) {
@@ -63,14 +56,6 @@ public class Indenter {
         }
     }
 
-//    public void fixLines(List<Line> lines) {
-//        final int linesSize = lines.size();
-//        for (int i = 0; i < linesSize; i++) {
-////             remove os caracteres brancos e adiciona '\n' no final da linha, caso não seja a ultima
-////            lines.set(i, removeBlankCharacters(lines.get(i)) + (i + 1 < linesSize ? '\n' : ""));
-//            lines.set(i, removeBlankCharacters(lines.get(i).trim()));
-//        }
-//    }
     public String fillString(char aChar, int size) {
         StringBuilder builder = new StringBuilder();
         while (builder.length() < size) {
@@ -96,18 +81,14 @@ public class Indenter {
 
     public String firstsBlankCharacters(List<Line> lines) {
         int lineIndex = 0;
-        int maxCount = 0;
+        int minCount = Integer.MAX_VALUE;
         for (int i = 0; i < lines.size(); i++) {
             int count = lines.get(i).prefix.length();
-            if (count > maxCount) {
-                maxCount = count;
+            if (count < minCount) {
+                minCount = count;
                 lineIndex = i;
             }
         }
         return lines.get(lineIndex).prefix;
-    }
-
-    private String getLineSeparetor() {
-        return System.getProperty("line.separator");
     }
 }
