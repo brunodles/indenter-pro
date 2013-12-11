@@ -41,9 +41,9 @@ public class Indenter {
         int errosCount = 0;
         for (Line line : lines) {
             if (option.matcher(line.value).find()) {
+                errosCount = 0;
                 if (block == null) {
                     block = new Block(option);
-                    errosCount = 0;
                     result.add(block);
                 }
                 block.addLine(line);
