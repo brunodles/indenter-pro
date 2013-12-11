@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Block {
 
-    List<Line> lines = new ArrayList<Line>();
+    List<LineMatcher> lines = new ArrayList<LineMatcher>();
     Option option;
 
     public Block(Option option) {
@@ -21,6 +21,6 @@ public class Block {
     }
 
     public void addLine(Line line) {
-        lines.add(line);
+        lines.add(new LineMatcher(line, option));
     }
 }

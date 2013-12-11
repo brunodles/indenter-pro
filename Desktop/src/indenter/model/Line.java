@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
  */
 public class Line {
 
-    String prefix;
-    StringBuilder value;
-    String sufix;
+    private String prefix;
+    private StringBuilder value;
+    private String sufix;
 
     Line(String lineStr) {
         this.prefix = "";
@@ -87,5 +87,17 @@ public class Line {
             builder.append(line.toString());
         }
         return builder.toString();
+    }
+
+    String sufix() {
+        return sufix;
+    }
+
+    String prefix() {
+        return prefix;
+    }
+
+    StringBuilder value() {
+        return value;
     }
 }

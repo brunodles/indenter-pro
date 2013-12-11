@@ -42,37 +42,6 @@ public class Option {
         return pattern.matcher(charSequence);
     }
 
-    public int spaceIndex(String string) {
-        Matcher matcher = matcher(string);
-        if (matcher.find()) {
-            return matcher.start(spaceGroupIndex);
-        }
-        return -1;
-    }
-
-    public int startIdentableGroupIndex(String string) {
-        int result = startIndex(string, identableGroupIndex);
-        if (result < 0) {
-            result = startIndex(string, spaceGroupIndex);
-        }
-        return result;
-    }
-
-    public int startSpaceGroupIndex(String string) {
-        return startIndex(string, spaceGroupIndex);
-    }
-
-    private int startIndex(String string, int group) {
-        Matcher matcher = matcher(string);
-        if (matcher.find()) {
-            try {
-                return matcher.start(group);
-            } catch (Exception e) {
-            }
-        }
-        return -1;
-    }
-
 //    public String applyOption(String line){
 //        
 //    }
@@ -120,7 +89,7 @@ public class Option {
         Matcher matcher = pattern.matcher(regex);
         while (matcher.find()) {
             final String group = matcher.group(1);
-            if ((!" ?".equals(group)) && (!group.startsWith("?:"))) {
+            if ((!group.startsWith(" ")) && (!group.startsWith("?:"))) {
                 return matcher.start(1);
             }
         }

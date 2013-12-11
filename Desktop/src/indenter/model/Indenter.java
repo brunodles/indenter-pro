@@ -40,7 +40,7 @@ public class Indenter {
         Block block = null;
         int errosCount = 0;
         for (Line line : lines) {
-            if (option.matcher(line.value).find()) {
+            if (option.matcher(line.value()).find()) {
                 errosCount = 0;
                 if (block == null) {
                     block = new Block(option);
@@ -55,14 +55,20 @@ public class Indenter {
         return result;
     }
 
-    public void indentBlock(List<Line> lines, Option option) {
+    public void indentBlock(List<LineMatcher> lines, Option option) {
         int maxCharacterPosition = findMaxCharacterPosition(lines, option);
-        for (Line line : lines) {
-            String string = line.value.toString();
-            int characterPosition = option.startIdentableGroupIndex(string);
-            int spacePosition = option.startSpaceGroupIndex(string);
+        for (LineMatcher line : lines) {
+            //            String string = line.value;
+//            Matcher matcher = option.matcher(line.value);
+//            matcher.find();
+//            int characterPosition = option.startIdentableGroupIndex(line.value);
+//            int spacePosition = option.startSpaceGroupIndex(line.value);
+//            int characterPosition = matcher.start(option.identableGroupIndex);
+//            int spacePosition = matcher.start(option.spaceGroupIndex);
+            int characterPosition = line.startIdentableGroupIndex();
+            int spacePosition = line.startSpaceGroupIndex();
             if ((characterPosition > 0) && (characterPosition < maxCharacterPosition)) {
-                line.value.insert(spacePosition, fillString(' ', maxCharacterPosition - characterPosition));
+                line.value().insert(spacePosition, fillString(' ', maxCharacterPosition - characterPosition));
             }
         }
     }
@@ -75,10 +81,10 @@ public class Indenter {
         return builder.toString();
     }
 
-    public int findMaxCharacterPosition(List<Line> lines, Option option) {
+    public int findMaxCharacterPosition(List<LineMatcher> lines, Option option) {
         int maxPosition = 0;
-        for (Line line : lines) {
-            int position = option.startIdentableGroupIndex(line.value.toString());
+        for (LineMatcher line : lines) {
+            int position = line.startIdentableGroupIndex();
             if (position > maxPosition) {
                 maxPosition = position;
             }
@@ -94,12 +100,12 @@ public class Indenter {
         int lineIndex = 0;
         int minCount = Integer.MAX_VALUE;
         for (int i = 0; i < lines.size(); i++) {
-            int count = lines.get(i).prefix.length();
+            int count = lines.get(i).prefix().length();
             if (count < minCount) {
                 minCount = count;
                 lineIndex = i;
             }
         }
-        return lines.get(lineIndex).prefix;
+        return lines.get(lineIndex).prefix();
     }
 }
