@@ -29,9 +29,17 @@ public class ClipboardListener implements ClipboardOwner {
 
     public ClipboardListener(String options) {
         this.options = options;
-        Transferable trans = clipBoard.getContents(this);
-        setContent(trans);
+        registerAsOwner();
         System.out.println("Listener iniciado");
+    }
+
+    private void registerAsOwner() {
+        // Quando outro programa executa ctrl+c este vira o Owner do clipboard
+        // depois disso o programa nos devolve o clipboard.
+        // Dessa forma podemos monitorar o clipboard usando o evento lostOwnership
+        // O método setContents registra this como ClipoardOwner
+        clipBoard.setContents(clipBoard.getContents(this), this);
+//        clipBoard.addFlavorListener(this);
     }
 
     @Override
@@ -42,6 +50,10 @@ public class ClipboardListener implements ClipboardOwner {
         Indenter indenter = new Indenter(options);
         content = indenter.indent(content);
         setContent(contents);
+    }
+
+    private boolean isString() {
+        return clipBoard.isDataFlavorAvailable(DataFlavor.stringFlavor);
     }
 
     private void getContent(Transferable t) {
