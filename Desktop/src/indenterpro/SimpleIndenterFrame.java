@@ -5,7 +5,8 @@
  */
 package indenterpro;
 
-import indenter.model.Indenter;
+import identer.listener.BoardListener;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,12 +21,12 @@ import java.util.logging.Logger;
  * @author bruno
  */
 public class SimpleIndenterFrame extends javax.swing.JFrame {
-
+    BoardListener boardListener;
     /**
      * Creates new form SimpleIdenter
      */
     public SimpleIndenterFrame() {
-        initComponents();
+        initComponents();        
     }
 
     /**
@@ -39,8 +40,6 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         options = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        text = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
 
@@ -59,11 +58,7 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
 
         jLabel1.setText("Characters");
 
-        text.setColumns(20);
-        text.setRows(5);
-        jScrollPane1.setViewportView(text);
-
-        jButton1.setText("Indent");
+        jButton1.setText("Reload Options");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -79,20 +74,18 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(options)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel2)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(options, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
-                .addContainerGap())
+                        .addComponent(jButton1)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -102,10 +95,8 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(options, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
-                .addGap(1, 1, 1)
-                .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -113,7 +104,13 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        indent();
+        try {            
+            indent();
+        } catch (UnsupportedFlavorException ex) {
+            Logger.getLogger(SimpleIndenterFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SimpleIndenterFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
@@ -152,12 +149,14 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
 
     public void load() {
         System.out.println("Load");
-        try {
+        try {            
             options.setText(readFile("options"));
+            boardListener = new BoardListener(options.getText());
+            boardListener.start();  
         } catch (Exception ex) {
         }
         try {
-            text.setText(readFile("text"));
+//            text.setText(readFile("text"));
         } catch (Exception ex) {
         }
     }
@@ -169,16 +168,19 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
         } catch (Exception ex) {
         }
         try {
-            writeFile("text", text.getText());
+//            writeFile("text", text.getText());
         } catch (Exception ex) {
         }
-    }
-
-    private void indent() {
-        // teste
-        Indenter indenter = new Indenter(options.getText());
-        String indented = indenter.indent(text.getText());
-        text.setText(indented);
+    }    
+    
+    private void indent() throws UnsupportedFlavorException, IOException {
+        boardListener.setOptions(options.getText());
+        
+//        Indenter indenter = new Indenter(options.getText());
+//        String indented = indenter.indent(text.getText());
+//        String indented = indenter.indent(data);
+//        text.setText(indented);
+        
     }
 
     /**
@@ -219,8 +221,6 @@ public class SimpleIndenterFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField options;
-    private javax.swing.JTextArea text;
     // End of variables declaration//GEN-END:variables
 }
