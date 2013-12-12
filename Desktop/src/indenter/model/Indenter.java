@@ -40,7 +40,7 @@ public class Indenter {
         Block block = null;
         int errosCount = 0;
         for (Line line : lines) {
-            if (option.matcher(line.value()).find()) {
+            if (option.matches(line)) {
                 errosCount = 0;
                 if (block == null) {
                     block = new Block(option);
@@ -56,15 +56,21 @@ public class Indenter {
 
     public void indentBlock(List<LineMatcher> lines, Option option) {
         int maxCharacterPosition = findMaxCharacterPosition(lines, option);
-        System.out.println("maxCharacterPosition - " + maxCharacterPosition);
+        System.out.println("maxCharacterPosition = " + maxCharacterPosition);
         for (LineMatcher line : lines) {
             int characterPosition = line.startIdentableGroupIndex();
-            System.out.print("  characterPosition = " + characterPosition);
+            String before = String.format("            [%s]\n", line.value());
+            System.out.print(" characterPosition = " + characterPosition);
             int spacePosition = line.startSpaceGroupIndex();
             if ((characterPosition > 0) && (characterPosition < maxCharacterPosition)) {
                 line.insert(spacePosition, fillString(' ', maxCharacterPosition - characterPosition));
             }
-            System.out.println("  > " + line.startIdentableGroupIndex());
+            // depois de adicionar os espaços o indice do grupo editável 
+            // deve ser o mesmo do indice máximo
+            line.rebuild();
+            System.out.println(" > " + line.startIdentableGroupIndex());
+            System.out.println(before);
+            System.out.printf("            [%s]\n", line.value());
         }
     }
 
@@ -95,7 +101,7 @@ public class Indenter {
         int lineIndex = 0;
         int minCount = Integer.MAX_VALUE;
         for (int i = 0; i < lines.size(); i++) {
-            int count = lines.get(i).prefix().length();
+            int count = lines.get(i).prefixLength();
             if (count < minCount) {
                 minCount = count;
                 lineIndex = i;

@@ -42,6 +42,10 @@ public class Option {
         return pattern.matcher(charSequence);
     }
 
+    public boolean matches(CharSequence charSequence) {
+        return matcher(charSequence).find();
+    }
+
 //    public String applyOption(String line){
 //        
 //    }

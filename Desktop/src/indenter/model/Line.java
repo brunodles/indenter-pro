@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  *
  * @author Bruno
  */
-public class Line {
+public class Line implements CharSequence {
 
     private String prefix;
     private StringBuilder value;
@@ -49,15 +49,6 @@ public class Line {
      */
     private String removeBlankCharacters(String string) {
         return string.trim().replaceAll("[\\p{Blank}]++", " ");
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(prefix);
-        builder.append(value);
-        builder.append(sufix);
-        return builder.toString();
     }
 
     /**
@@ -103,5 +94,40 @@ public class Line {
 
     void insert(int offset, String str) {
         value.insert(offset, str);
+    }
+
+    void rebuild() {
+        value = new StringBuilder(value.toString());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(prefix);
+        builder.append(value);
+        builder.append(sufix);
+        return builder.toString();
+    }
+
+    @Override
+    public int length() {
+        return value.length();
+    }
+
+    public int prefixLength() {
+        if (prefix == null) {
+            return 0;
+        }
+        return prefix.length();
+    }
+
+    @Override
+    public char charAt(int index) {
+        return value.charAt(index);
+    }
+
+    @Override
+    public CharSequence subSequence(int start, int end) {
+        return subSequence(start, end);
     }
 }

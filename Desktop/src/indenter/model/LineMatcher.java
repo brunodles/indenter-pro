@@ -23,7 +23,7 @@ public class LineMatcher {
 //        removeSpacesOnSpaceGroup();
     }
 
-    private StringBuilder value() {
+    StringBuilder value() {
         return line.value();
     }
 
@@ -44,27 +44,38 @@ public class LineMatcher {
     }
 
     public void insert(int offset, String str) {
-        line.value().insert(offset, str);
+        line.insert(offset, str);
+    }
+
+    void rebuild() {
+        line.rebuild();
+        buildMatcher();
     }
 
     private int startIndex(int group) {
-//        buildMatcher();
+        buildMatcher();
         return matcher.start(group);
     }
 
     private boolean buildMatcher() {
-        matcher = option.matcher(line.value());
+        matcher = option.matcher(line);
         return matcher.find();
     }
 
+    @Deprecated
     private void removeSpacesOnSpaceGroup() {
-//        buildMatcher();
-        String spaceGroup = matcher.group(option.spaceGroupIndex);
-        if (spaceGroup.replaceAll("[\\p{Blank}]++", "").isEmpty()) {
-            int start = matcher.start(option.spaceGroupIndex);
-            int end = matcher.end(option.spaceGroupIndex);
-            value().replace(start, end, " ");
-        }
-//        buildMatcher();
+////        buildMatcher();
+//        String spaceGroup = matcher.group(option.spaceGroupIndex);
+//        if (spaceGroup.replaceAll("[\\p{Blank}]++", "").isEmpty()) {
+//            int start = matcher.start(option.spaceGroupIndex);
+//            int end = matcher.end(option.spaceGroupIndex);
+//            value().replace(start, end, " ");
+//        }
+////        buildMatcher();
+    }
+
+    @Override
+    public String toString() {
+        return line.toString();
     }
 }
