@@ -48,7 +48,6 @@ public class Indenter {
                 }
                 block.addLine(line);
             } else if ((++errosCount > option.ignorableLines) && (block != null)) {
-                result.add(block);
                 block = null;
             }
         }
@@ -57,19 +56,15 @@ public class Indenter {
 
     public void indentBlock(List<LineMatcher> lines, Option option) {
         int maxCharacterPosition = findMaxCharacterPosition(lines, option);
+        System.out.println("maxCharacterPosition - " + maxCharacterPosition);
         for (LineMatcher line : lines) {
-            //            String string = line.value;
-//            Matcher matcher = option.matcher(line.value);
-//            matcher.find();
-//            int characterPosition = option.startIdentableGroupIndex(line.value);
-//            int spacePosition = option.startSpaceGroupIndex(line.value);
-//            int characterPosition = matcher.start(option.identableGroupIndex);
-//            int spacePosition = matcher.start(option.spaceGroupIndex);
             int characterPosition = line.startIdentableGroupIndex();
+            System.out.print("  characterPosition = " + characterPosition);
             int spacePosition = line.startSpaceGroupIndex();
             if ((characterPosition > 0) && (characterPosition < maxCharacterPosition)) {
-                line.value().insert(spacePosition, fillString(' ', maxCharacterPosition - characterPosition));
+                line.insert(spacePosition, fillString(' ', maxCharacterPosition - characterPosition));
             }
+            System.out.println("  > " + line.startIdentableGroupIndex());
         }
     }
 

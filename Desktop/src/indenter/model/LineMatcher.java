@@ -19,10 +19,11 @@ public class LineMatcher {
     public LineMatcher(Line line, Option option) {
         this.line = line;
         this.option = option;
-        removeSpacesOnSpaceGroup();
+        buildMatcher();
+//        removeSpacesOnSpaceGroup();
     }
 
-    public StringBuilder value() {
+    private StringBuilder value() {
         return line.value();
     }
 
@@ -42,8 +43,12 @@ public class LineMatcher {
         return startIndex(option.spaceGroupIndex);
     }
 
+    public void insert(int offset, String str) {
+        line.value().insert(offset, str);
+    }
+
     private int startIndex(int group) {
-        buildMatcher();
+//        buildMatcher();
         return matcher.start(group);
     }
 
@@ -53,13 +58,13 @@ public class LineMatcher {
     }
 
     private void removeSpacesOnSpaceGroup() {
-        buildMatcher();
+//        buildMatcher();
         String spaceGroup = matcher.group(option.spaceGroupIndex);
         if (spaceGroup.replaceAll("[\\p{Blank}]++", "").isEmpty()) {
             int start = matcher.start(option.spaceGroupIndex);
             int end = matcher.end(option.spaceGroupIndex);
             value().replace(start, end, " ");
         }
-        buildMatcher();
+//        buildMatcher();
     }
 }

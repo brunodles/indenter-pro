@@ -100,4 +100,8 @@ public class Line {
     StringBuilder value() {
         return value;
     }
+
+    void insert(int offset, String str) {
+        value.insert(offset, str);
+    }
 }
