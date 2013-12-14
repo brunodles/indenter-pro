@@ -21,7 +21,6 @@ public class Indenter {
 
     public String indent(String string) {
         List<Line> lines = Line.splitStringAsLineList(string);
-        String firstsBlankCharacters = firstsBlankCharacters(lines);
         List<Block> blocks = new ArrayList<Block>();
         for (Option option : options) {
             List<Block> optionBlocks = findBlocks(lines, option);
@@ -30,9 +29,11 @@ public class Indenter {
             }
         }
         for (Block block : blocks) {
+            // TODO Mudar prefix por bloco
+//        String firstsBlankCharacters = firstsBlankCharacters(lines);
             indentBlock(block.lines, block.option);
         }
-        return Line.joinLines(lines, firstsBlankCharacters);
+        return Line.joinLines(lines);
     }
 
     private List<Block> findBlocks(List<Line> lines, Option option) {

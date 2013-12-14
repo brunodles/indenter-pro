@@ -61,7 +61,7 @@ public class Line implements CharSequence {
         ArrayList<Line> list = new ArrayList<Line>();
         Line line = null;
         for (String s : string.split("[\r\n]")) {
-            line = new Line(s);
+            line       = new Line(s);
             line.sufix = "\n";
             list.add(line);
         }
@@ -71,10 +71,9 @@ public class Line implements CharSequence {
         return list;
     }
 
-    public static String joinLines(List<Line> lines, String blankCharacters) {
+    public static String joinLines(List<Line> lines) {
         StringBuilder builder = new StringBuilder();
         for (Line line : lines) {
-            line.prefix = blankCharacters;
             builder.append(line.toString());
         }
         return builder.toString();
