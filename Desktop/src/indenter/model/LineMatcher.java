@@ -62,6 +62,14 @@ public class LineMatcher {
         return matcher.find();
     }
 
+    String prefix() {
+        return line.prefix();
+    }
+
+    public int prefixLength() {
+        return line.prefixLength();
+    }
+
     @Deprecated
     private void removeSpacesOnSpaceGroup() {
 ////        buildMatcher();

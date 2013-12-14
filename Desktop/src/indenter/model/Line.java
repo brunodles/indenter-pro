@@ -61,7 +61,7 @@ public class Line implements CharSequence {
         ArrayList<Line> list = new ArrayList<Line>();
         Line line = null;
         for (String s : string.split("[\r\n]")) {
-            line       = new Line(s);
+            line = new Line(s);
             line.sufix = "\n";
             list.add(line);
         }

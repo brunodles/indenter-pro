@@ -57,21 +57,17 @@ public class Indenter {
 
     public void indentBlock(List<LineMatcher> lines, Option option) {
         int maxCharacterPosition = findMaxCharacterPosition(lines, option);
-        System.out.println("maxCharacterPosition = " + maxCharacterPosition);
+        int maxPrefixLength = countMaxFirstsBlankCharacters(lines);
         for (LineMatcher line : lines) {
             int characterPosition = line.startIdentableGroupIndex();
-            String before = String.format("            [%s]\n", line.value());
-            System.out.print(" characterPosition = " + characterPosition);
             int spacePosition = line.startSpaceGroupIndex();
             if ((characterPosition > 0) && (characterPosition < maxCharacterPosition)) {
-                line.insert(spacePosition, fillString(' ', maxCharacterPosition - characterPosition));
+                int spaces = (maxCharacterPosition - characterPosition) - (line.prefixLength() - maxPrefixLength);
+                line.insert(spacePosition, fillString(' ', spaces));
             }
             // depois de adicionar os espaços o indice do grupo editável 
             // deve ser o mesmo do indice máximo
             line.rebuild();
-            System.out.println(" > " + line.startIdentableGroupIndex());
-            System.out.println(before);
-            System.out.printf("            [%s]\n", line.value());
         }
     }
 
@@ -94,11 +90,11 @@ public class Indenter {
         return maxPosition;
     }
 
-    public int countMaxFirstsBlankCharacters(List<Line> lines) {
+    public int countMaxFirstsBlankCharacters(List<LineMatcher> lines) {
         return firstsBlankCharacters(lines).length();
     }
 
-    public String firstsBlankCharacters(List<Line> lines) {
+    private String firstsBlankCharacters(List<LineMatcher> lines) {
         int lineIndex = 0;
         int minCount = Integer.MAX_VALUE;
         for (int i = 0; i < lines.size(); i++) {
