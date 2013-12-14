@@ -15,8 +15,9 @@ import java.util.regex.Pattern;
  */
 public class Option {
 
-    // ( ?) space group.
-    public static final String OPTION_REGEX = "<(?:(\\d+)\\#)?(.+?)>";
+    // (\\s*) space group.
+    public static final String OPTION_REGEX = "<(?:(?:(\\d+)\\#)|(\\!))?(.+?)>";
+    boolean ignore = false;
     int ignorableLines = 0;
     String regex;
     Pattern pattern;
@@ -66,8 +67,9 @@ public class Option {
     private static Option findOption(Matcher matcher) {
         Option option = new Option();
 
-        final String regex = matcher.group(2);
+        final String regex = matcher.group(3);
         option.ignorableLines = strToIntDef(matcher.group(1), 0);
+        option.ignore = matcher.group(2).contains("!");
         option.regex = regex;
         option.pattern = Pattern.compile(regex);
         int spaceGroupIndex = findSpaceGroupIndex(regex);
@@ -85,7 +87,7 @@ public class Option {
     }
 
     private static int findSpaceGroupIndex(String regex) {
-        return regex.indexOf("( ?)");
+        return regex.indexOf("(\\s*)");
     }
 
     private static int findIdentableGroupIndex(String regex) {
@@ -93,7 +95,7 @@ public class Option {
         Matcher matcher = pattern.matcher(regex);
         while (matcher.find()) {
             final String group = matcher.group(1);
-            if ((!group.startsWith(" ")) && (!group.startsWith("?:"))) {
+            if ((!group.startsWith(" ")) && (!group.startsWith("?:")) && (!"(\\s*)".equals(group))) {
                 return matcher.start(1);
             }
         }

@@ -29,8 +29,6 @@ public class Indenter {
             }
         }
         for (Block block : blocks) {
-            // TODO Mudar prefix por bloco
-//        String firstsBlankCharacters = firstsBlankCharacters(lines);
             indentBlock(block.lines, block.option);
         }
         return Line.joinLines(lines);

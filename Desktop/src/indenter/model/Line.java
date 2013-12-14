@@ -17,11 +17,11 @@ public class Line implements CharSequence {
 
     private String prefix;
     private StringBuilder value;
-    private String sufix;
+    private String suffix;
 
     Line(String lineStr) {
         this.prefix = "";
-        this.sufix = "";
+        this.suffix = "";
         findFirstsBlankCharacters(lineStr);
     }
 
@@ -62,11 +62,11 @@ public class Line implements CharSequence {
         Line line = null;
         for (String s : string.split("[\r\n]")) {
             line = new Line(s);
-            line.sufix = "\n";
+            line.suffix = "\n";
             list.add(line);
         }
         if (line != null) {
-            line.sufix = "";
+            line.suffix = "";
         }
         return list;
     }
@@ -79,8 +79,8 @@ public class Line implements CharSequence {
         return builder.toString();
     }
 
-    String sufix() {
-        return sufix;
+    String suffix() {
+        return suffix;
     }
 
     String prefix() {
@@ -111,7 +111,7 @@ public class Line implements CharSequence {
         StringBuilder builder = new StringBuilder();
         builder.append(prefix);
         builder.append(value);
-        builder.append(sufix);
+        builder.append(suffix);
         return builder.toString();
     }
 
