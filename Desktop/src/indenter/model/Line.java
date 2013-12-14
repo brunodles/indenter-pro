@@ -87,6 +87,13 @@ public class Line implements CharSequence {
         return prefix;
     }
 
+    public int prefixLength() {
+        if (prefix == null) {
+            return 0;
+        }
+        return prefix.length();
+    }
+
     StringBuilder value() {
         return value;
     }
@@ -111,13 +118,6 @@ public class Line implements CharSequence {
     @Override
     public int length() {
         return value.length();
-    }
-
-    public int prefixLength() {
-        if (prefix == null) {
-            return 0;
-        }
-        return prefix.length();
     }
 
     @Override
