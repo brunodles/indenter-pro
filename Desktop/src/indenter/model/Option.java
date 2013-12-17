@@ -16,8 +16,9 @@ import java.util.regex.Pattern;
 public class Option {
 
     // (\\s*) space group.
-    public static final String OPTION_REGEX = "<(?:(?:(\\d+)\\#)|(\\!))?(.+?)>";
+    public static final String OPTION_REGEX = "<(?:(?:(\\d+)i)|([n|m]))?(.+?)>";
     boolean ignore = false;
+    boolean multipleInLine;
     int ignorableLines = 0;
     String regex;
     Pattern pattern;
@@ -69,7 +70,10 @@ public class Option {
 
         final String regex = matcher.group(3);
         option.ignorableLines = strToIntDef(matcher.group(1), 0);
-        option.ignore = matcher.group(2).contains("!");
+        if (matcher.group(2) != null) {
+            option.ignore = matcher.group(2).contains("n");
+            option.multipleInLine = matcher.group(2).contains("m");
+        }
         option.regex = regex;
         option.pattern = Pattern.compile(regex);
         int spaceGroupIndex = findSpaceGroupIndex(regex);

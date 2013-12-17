@@ -4,6 +4,8 @@
  */
 package indenter.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 /**
@@ -13,7 +15,8 @@ import java.util.regex.Matcher;
 public class LineMatcher {
 
     private Line line;
-    private Matcher matcher;
+//    private Matcher matcher;
+    private List<Match> matches;
     private Option option;
 
     public LineMatcher(Line line, Option option) {
@@ -54,12 +57,17 @@ public class LineMatcher {
 
     private int startIndex(int group) {
         buildMatcher();
-        return matcher.start(group);
+        return matches.get(0).start(group);
+    }
+
+    private int matchersCount() {
+        return matches.size();
     }
 
     private boolean buildMatcher() {
-        matcher = option.matcher(line);
-        return matcher.find();
+        Matcher matcher = option.matcher(line);
+        matches = Match.fromMatcher(matcher);
+        return !matches.isEmpty();
     }
 
     String prefix() {
